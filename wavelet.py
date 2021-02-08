@@ -50,32 +50,3 @@ def w2d(img, mode):
 
 original = cv2.imread("/Users/simgh/Downloads/Code/landscape_100_stacked_result.png",-1).astype(np.float32)
 w2d(original/65535, 'haar')
-
-"""    
-original = cv2.imread("/Users/simgh/Downloads/Code/landscape_100_stacked_result.png")
-
-b,g,r = cv2.split(original)
-
-# Wavelet transform of image, and plot approximation and details
-titles = ['Approximation', ' Horizontal detail',
-          'Vertical detail', 'Diagonal detail']
-coeffs2 = pywt.dwt2(b, 'haar')
-LL, (LH, HL, HH) = coeffs2
-#fig = plt.figure(figsize=(12, 3))
-b=pywt.idwt2(coeffs2, 'haar')
-#plt.imshow(resized)
-cv2.imshow("asdf",b)
-cv2.waitKey()
-#plt.imshow(LH+HL+HH+LL)
-#plt.imshow(pywt.idwt2(HH, 'haar')/65535)
-
-for i, a in enumerate([LL, LH, HL, HH]):
-    ax = fig.add_subplot(1, 4, i + 1)
-    ax.imshow(a, interpolation="nearest", cmap=plt.cm.gray)
-    ax.set_title(titles[i], fontsize=10)
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-fig.tight_layout()
-#plt.show()
-"""

@@ -74,21 +74,6 @@ strongness=1
 next=-strongness*1
 sharpening_3_strong =  np.array([[next, next, next], [next, abs(next*4+next*4)+1, next], [next, next, next]])
 
-"""
-b, g, r = cv2.split(stacked_img)
-b_wavelet=w2d(b, level=1)
-g_wavelet=w2d(g, level=1)
-r_wavelet=w2d(r, level=1)
-b_wavelet=cv2.filter2D(b_wavelet, -1, sharpening_3_weak)
-g_wavelet=cv2.filter2D(g_wavelet, -1, sharpening_3_weak)
-r_wavelet=cv2.filter2D(r_wavelet, -1, sharpening_3_weak)
-"""
-v = cv2.filter2D(v, -1, sharpening_3_strong)
-print(v_wavelet)
-sharpened=cv2.merge((h,s,v))
-hsv_sharpened = cv2.cvtColor(sharpened, cv2.COLOR_HSV2BGR)
-sharpened = cv2.filter2D(stacked_img, -1, sharpening_3_strong)
-
 
 cv2.imshow("hsv sharpened", hsv_sharpened)
 cv2.imshow("wavelet",v_wavelet)
