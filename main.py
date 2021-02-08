@@ -3,19 +3,22 @@ import cv2
 import tictoc
 import pywt
 
-def w2d(img, mode):
-    if img.dtype=="uint16":
-        img=img.astype(np.float32)/65535
+def w2d(img, mode, wavelet_power,sharpen):
     img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(img)
-    img=cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
     coeffs2 = pywt.dwt2(v, mode)
-    #LL, (LH, HL, HH) = coeffs2
-    v=pywt.idwt2(coeffs2, mode)
-    img = cv2.merge((h,s,v))
-    img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
-    return img
+    LL, (LH, HL, HH) = coeffs2
+    coeffs2_H = list(coeffs2)
+    coeffs2_H[0]*=0
+    v_H=pywt.idwt2(coeffs2_H, mode)
+    v_sharpen = cv2.filter2D(v_H, -1, np.array([[-1 * sharpen, -1 * sharpen, -1 * sharpen], [-1 * sharpen, 1 + 8 * sharpen, -1 * sharpen],[-1 * sharpen, -1 * sharpen, -1 * sharpen]]))
+    v_wavelet = (v_sharpen*wavelet_power+v)
+    v_blured=cv2.GaussianBlur(v_wavelet,(5,5), 0)
+    result = cv2.merge((h,s,v_blured))
+    result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
+    return result
 
+original = cv2.imread(".
 def stackImagesECC(file_list, lowres, ratio):
     global diff
     M = np.eye(3, 3, dtype=np.float32)
