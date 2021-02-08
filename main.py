@@ -2,24 +2,20 @@ import numpy as np
 import cv2
 import tictoc
 import pywt
-import wavelet
 
 def w2d(img, mode):
+    if img.dtype=="uint16":
+        img=img.astype(np.float32)/65535
     img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(img)
     img=cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
-    cv2.imshow("asdfasfdsf",img)
     coeffs2 = pywt.dwt2(v, mode)
     #LL, (LH, HL, HH) = coeffs2
     v=pywt.idwt2(coeffs2, mode)
-    v = np.float32(v)
-    h = np.float32(h)
-    s = np.float32(s)
     img = cv2.merge((h,s,v))
     img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
-    cv2.imshow("asdf",img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    return img
+
 def stackImagesECC(file_list, lowres, ratio):
     global diff
     M = np.eye(3, 3, dtype=np.float32)
@@ -65,19 +61,15 @@ ratio=0.5
 dataset='Man'
 howmany=100
 for i in range(howmany):
-    file_list.append(f'./src_pics/{dataset}/{i}.png')
+    file_list.append(f'../src/src_pics/{dataset}/{i}.png')
 tictoc.tic()
 stacked_img=stackImagesECC(file_list, lowres, ratio)
 tictoc.toc()
-sharpening_3_weak = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-strongness=1
-next=-strongness*1
-sharpening_3_strong =  np.array([[next, next, next], [next, abs(next*4+next*4)+1, next], [next, next, next]])
 
+sharpened_img=w2d(stacked_img, 'haar')
 
-cv2.imshow("hsv sharpened", hsv_sharpened)
-cv2.imshow("wavelet",v_wavelet)
-#cv2.imshow("stacked", stacked_img)
+cv2.imshow("wavelet sharpened", sharpened_img)
+cv2.imshow("stacked", stacked_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
