@@ -32,6 +32,8 @@ def w2d(img, mode='haar', level=1):
 #w2d("/Users/simgh/Downloads/Code/Man_100_stacked_result.png", level=1)
 """
 def w2d(img, mode, wavelet_power,sharpen):
+    if img.dtype=="uint16":
+        img=img.astype(np.float32)/65535
     img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(img)
     coeffs2 = pywt.dwt2(v, mode)
@@ -46,9 +48,9 @@ def w2d(img, mode, wavelet_power,sharpen):
     result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
     return result
 
-original = cv2.imread("./Man_100_stacked_result.png",-1).astype(np.float32)
-result = w2d(original/65535, 'haar', 100, 0.01)
+original = cv2.imread("./Man_100_stacked_result.png",-1)
+result = w2d(original, 'haar', 25, 0.01)
 
-cv2.imshow("sharpen=>wavelet", result)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.imshow("wavelet", result)
+cv2.imwrite("wavelet.png", result*255)
+cv2.waitKey()

@@ -4,6 +4,8 @@ import tictoc
 import pywt
 
 def w2d(img, mode, wavelet_power,sharpen):
+    if img.dtype=="uint16":
+        img=img.astype(np.float32)/65535
     img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(img)
     coeffs2 = pywt.dwt2(v, mode)
@@ -61,7 +63,7 @@ def stackImagesECC(file_list, lowres, ratio):
 file_list=[]
 lowres=False
 ratio=0.5
-dataset='Man'
+dataset=''
 howmany=100
 for i in range(howmany):
     file_list.append(f'../src/src_pics/{dataset}/{i}.png')
@@ -69,7 +71,7 @@ tictoc.tic()
 stacked_img=stackImagesECC(file_list, lowres, ratio)
 tictoc.toc()
 
-sharpened_img=w2d(stacked_img, 'haar')
+sharpened_img=w2d(stacked_img, 'haar', 25, 0.01)
 
 cv2.imshow("wavelet sharpened", sharpened_img)
 cv2.imshow("stacked", stacked_img)
