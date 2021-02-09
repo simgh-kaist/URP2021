@@ -12,6 +12,8 @@ def video2image(file, dir):
             break
         if not (os.path.isdir(dir)):
             os.makedirs(os.path.join(dir))
-        cv2.imwrite(f'{dir}/{i}.jpg', curr)
+        cv2.imwrite(f'{dir}/{i}.png', curr)
 
-video2image('./src_video/IMG_002407.MOV', './src_pics/lowlight')
+video2image('../src/src_video/lightnight/IMG_002414.MOV', '../src/src_pics/lightnight')
+
+

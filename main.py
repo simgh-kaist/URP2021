@@ -20,7 +20,6 @@ def w2d(img, mode, wavelet_power,sharpen):
     result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
     return result
 
-original = cv2.imread(".
 def stackImagesECC(file_list, lowres, ratio):
     global diff
     M = np.eye(3, 3, dtype=np.float32)
@@ -63,21 +62,26 @@ def stackImagesECC(file_list, lowres, ratio):
 file_list=[]
 lowres=False
 ratio=0.5
-dataset=''
+dataset='darknight'
 howmany=100
 for i in range(howmany):
-    file_list.append(f'../src/src_pics/{dataset}/{i}.png')
+    file_list.append(f'../src/src_pics/{dataset}/{i}.jpg')
 tictoc.tic()
 stacked_img=stackImagesECC(file_list, lowres, ratio)
 tictoc.toc()
 
 sharpened_img=w2d(stacked_img, 'haar', 25, 0.01)
 
-cv2.imshow("wavelet sharpened", sharpened_img)
-cv2.imshow("stacked", stacked_img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow("stacked", stacked_img)
+#cv2.imwrite("wavelet.png", sharpened_img)
 
+if lowres==True:
+    cv2.imwrite(f'./test_result/lowres_{dataset}_{howmany}_stacked_result.png', stacked_img, [cv2.CV_16U])
+    cv2.imwrite(f'./test_result/lowres_{dataset}_{howmany}_wavelet.png', sharpened_img*255)
+    # cv2.imwrite(f'lowres_{dataset}_{howmany}_filtered.png', filtered_img1, [cv2.CV_16U])
+else:
+    cv2.imwrite(f'./test_result/{dataset}_{howmany}_stacked_result.png', stacked_img, [cv2.CV_16U])
+    cv2.imwrite(f'./test_result/{dataset}_{howmany}_wavelet.png', sharpened_img*255)
 
 """
 #avg_kernel=np.ones((3,3))/9
