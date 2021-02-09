@@ -34,6 +34,8 @@ def w2d(img, mode='haar', level=1):
 def w2d(img, mode, wavelet_power,sharpen):
     if img.dtype=="uint16":
         img=img.astype(np.float32)/65535
+    elif img.dtype=="uint8":
+        img = img.astype(np.float32) / 255
     img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(img)
     coeffs2 = pywt.dwt2(v, mode)
@@ -48,7 +50,8 @@ def w2d(img, mode, wavelet_power,sharpen):
     result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
     return result
 
-original = cv2.imread("./Man_100_stacked_result.png",-1)
+#original = cv2.imread("./test_result/sin_100_stacked_result.png",-1)
+original = cv2.imread("/Users/simgh/Downloads/lowres,stacked,sr.png",-1)
 result = w2d(original, 'haar', 25, 0.01)
 
 cv2.imshow("wavelet", result)

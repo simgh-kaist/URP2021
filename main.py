@@ -60,9 +60,9 @@ def stackImagesECC(file_list, lowres, ratio):
     return stacked_image
 
 file_list=[]
-lowres=False
+lowres=True
 ratio=0.5
-dataset='darknight'
+dataset='sign_tree'
 howmany=100
 for i in range(howmany):
     file_list.append(f'../src/src_pics/{dataset}/{i}.jpg')
@@ -71,12 +71,13 @@ stacked_img=stackImagesECC(file_list, lowres, ratio)
 tictoc.toc()
 
 sharpened_img=w2d(stacked_img, 'haar', 25, 0.01)
-
+#stacked_img=((stacked_img/65535)*255).astype(np.uint8)
 #cv2.imshow("stacked", stacked_img)
 #cv2.imwrite("wavelet.png", sharpened_img)
 
 if lowres==True:
     cv2.imwrite(f'./test_result/lowres_{dataset}_{howmany}_stacked_result.png', stacked_img, [cv2.CV_16U])
+    #cv2.imwrite(f'./test_result/asdf_lowres_{dataset}_{howmany}_stacked_result.png', stacked_img)
     cv2.imwrite(f'./test_result/lowres_{dataset}_{howmany}_wavelet.png', sharpened_img*255)
     # cv2.imwrite(f'lowres_{dataset}_{howmany}_filtered.png', filtered_img1, [cv2.CV_16U])
 else:
