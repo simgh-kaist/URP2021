@@ -61,3 +61,7 @@ def ORB_Stack(file_list):
     stacked_image /= len(file_list)
     stacked_image = (stacked_image*255).astype(np.uint8)
     return stacked_image
+
+image=ORB_Example(f'../src/src_pics/lowlight/10.jpg', f'../src/src_pics/lowlight/50.jpg')
+cv2.imshow("asdf",image)
+cv2.waitKey(0)
