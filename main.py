@@ -22,7 +22,6 @@ def w2d(img, mode, wavelet_power,sharpen):
     return result
 
 def stackImagesECC(file_list, lowres, ratio):
-    global diff
     M = np.eye(3, 3, dtype=np.float32)
 
     first_image = None
@@ -43,20 +42,27 @@ def stackImagesECC(file_list, lowres, ratio):
             # convert to gray scale floating point image
             first_image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
             stacked_image = image
+            w, h, _ = image.shape
+            rate_sum = np.ones((w,h))
         else:
             # Estimate perspective transform
             s, M = cv2.findTransformECC(cv2.cvtColor(image,cv2.COLOR_BGR2GRAY), first_image, M, cv2.MOTION_HOMOGRAPHY, criteria, None, 5)
-            w, h, _ = image.shape
             ones=np.ones((w,h))
             blackArea=cv2.warpPerspective(ones, M, (h, w))
             # Align image to first image
             image = cv2.warpPerspective(image, M, (h, w))
-            image[blackArea != 1.] = stacked_image[blackArea!=1.]/i
+            #image[blackArea != 1.] = stacked_image[blackArea!=1.]/i
+            rate_sum += blackArea
             #diff=abs(stacked_image/i-image)
             #image[idx] = stacked_image[idx]/i
             stacked_image += image
         i+=1
-    stacked_image /= len(file_list)
+    #stacked_image /= len(file_list)
+    b, g, r = cv2.split(stacked_image)
+    b = b / rate_sum
+    g = g / rate_sum
+    r = r / rate_sum
+    stacked_image = cv2.merge((b,g,r))
     stacked_image = (stacked_image*65535).astype(np.uint16)
     return stacked_image
 
@@ -66,7 +72,7 @@ ratio=0.5
 dataset='sign_tree'
 howmany=100
 for i in range(howmany):
-    file_list.append(f'../src/src_pics/{dataset}/eighth_{i}.jpg')
+    file_list.append(f'../src/src_pics/{dataset}/{i}.jpg')
 
 end=0
 for i in range(10):
